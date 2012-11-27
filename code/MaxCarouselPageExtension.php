@@ -22,7 +22,7 @@ class MaxCarouselPageExtension extends DataExtension {
 		
 		foreach ($this->Carousels() as $carousel){
 			if ($i = $carousel->Image()) {
-				$fields->addFieldToTab("Root.Carousel", new LiteralField("CarouselImages","<div style='margin-bottom: 1em; border: 1px solid #ddd; text-align: center'><h2>".$carousel->Title."</h2><p><a href='/admin/pages/edit/EditForm/field/Documents/item/$carousel->ID/edit'>Zmeniť</a></p><p><img src='".$i->CarouselImageSize()->Filename."' \></p></div>"));
+				$fields->addFieldToTab("Root.Carousel", new LiteralField("CarouselImages","<div style='margin-bottom: 1em; border: 1px solid #ddd; text-align: center'><h2>".$carousel->Title."</h2><p><a href='/admin/pages/edit/EditForm/field/Documents/item/$carousel->ID/edit'>Change</a></p><p><img src='".$i->CarouselImageSize()->Filename."' \></p></div>"));
 			}
 		}	
 	}
@@ -31,12 +31,10 @@ class MaxCarouselPageExtension extends DataExtension {
 
 /**
  * Defines ContentController extension, generating skitter JS config and including needed JS and CSS files. 
- * By default, module is checking parent pages if no Slides defined on current page. You can disable this per page via CMS. 
- * Calling $CarouselsRecursive in your theme file will show up your defined Slides.
+ * Calling $CarouselsRecursive in your theme file will show up your defined Slides recursively
  * Css: carousel.styles.css is called automaticly and is basic carousel css
  * Js: all needed JS is called, if you have custom jQuery files, block module version in your mysite/_config.php file by
- * <code>Requirements::block("maxcarousel/javascript/xyz.js");</code>
- * @package maxcarousel - silverstripe module for slides management and presentation with jQuery skitter plugin
+ * @package maxcarousel - silverstripe module for slides management and presentation
  * @link maxcarousel https://github.com/Silvermax/maxcarousel/
  * @author Pali Ondras
  */

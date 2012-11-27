@@ -1,9 +1,8 @@
 <?php
 /**
  * Defines an SiteTree decorator which enables slides management 	
- * @package maxskitter - silverstripe module for slides management and presentation with jQuery skitter plugin
- * @link skitter http://www.thiagosf.net/projects/jquery/skitter/
- * @link maxskitter https://github.com/Silvermax/maxskitter/
+ * @package maxcarousel - silverstripe module for slides management and presentation
+ * @link maxskitter https://github.com/Silvermax/maxcarousel/
  * @author Pali Ondras
  */
 

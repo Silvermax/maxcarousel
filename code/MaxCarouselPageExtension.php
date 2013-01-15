@@ -11,7 +11,11 @@ class MaxCarouselPageExtension extends DataExtension {
 	static $db = array('notRecursiveCarousel' => 'Boolean');
 	
 	function Carousels() {
-		return $this->owner->Documents()->filter("isCarousel", 1);
+		return $this->owner->Documents()
+			->filter(array(
+				"isCarousel" => 1,
+				//"Filename:EndsWith" => ".jpg"
+		));
 	}
 	
 	function updateCMSFields(FieldList $fields) {
@@ -21,7 +25,11 @@ class MaxCarouselPageExtension extends DataExtension {
 		
 		foreach ($this->Carousels() as $carousel){
 			if ($i = $carousel->Image()) {
-				$fields->addFieldToTab("Root.Carousel", new LiteralField("CarouselImages","<div style='margin-bottom: 1em; border: 1px solid #ddd; text-align: center'><h2>".$carousel->Title."</h2><p><a href='/admin/pages/edit/EditForm/field/Documents/item/$carousel->ID/edit'>Change</a></p><p><img src='".$i->CarouselImageSize()->Filename."' \></p></div>"));
+				$message = "Image file is stored in database, but doesn't exists in filesystem. Error!";
+				if (file_exists(Director::getAbsFile($i->Filename))) {
+					$message = "<img src='".$i->CarouselImageSize()->Filename."' />";
+				}
+				$fields->addFieldToTab("Root.Carousel", new LiteralField("CarouselImages","<div style='margin-bottom: 1em; border: 1px solid #ddd; text-align: center'><h2>".$carousel->Title."</h2><p><a href='/admin/pages/edit/EditForm/field/Documents/item/$carousel->ID/edit'>Change</a></p>$message<p></p></div>"));
 			}
 		}	
 	}

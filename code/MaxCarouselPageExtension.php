@@ -10,29 +10,31 @@ class MaxCarouselPageExtension extends DataExtension {
 	
 	static $db = array('notRecursiveCarousel' => 'Boolean');
 	
-	function Carousels() {
-		return $this->owner->Documents()
-			->filter(array(
-				"isCarousel" => 1,
-				//"Filename:EndsWith" => ".jpg"
-		));
+	static $many_many = array('MaxCarouselItems'=>'MaxCarouselItem');
+	
+	public static $many_many_extraFields=array(
+    	'MaxCarouselItems'=>array(
+        	'SortOrder'=>'Int'
+        )
+	);
+	
+	function updateCMSFields(FieldList $fields) {	
+		
+		 $fields->addFieldToTab('Root.MaxCarouselItems', $grid=new GridField('MaxCarouselItems', 'Carousel items', $this->owner->MaxCarouselItems(), GridFieldConfig_RelationEditor::create(10)));
+
+        if (class_exists("GridFieldSortableRows")) {
+        	$grid->getConfig()->addComponent(new GridFieldSortableRows('SortOrder'));
+		} 
+	
 	}
 	
-	function updateCMSFields(FieldList $fields) {
-		//$slides = new GridField('Documents', 'Carousels', $this->owner->Carousels(), GridFieldConfig_RelationEditor::create());
-		
-		$fields->addFieldToTab("Root.Carousel", new CheckboxField("notRecursiveCarousel",_t("Carousel.notRecursiveCarousel","Do not grab slides from parent page!")));
-		
-		foreach ($this->Carousels() as $carousel){
-			if ($i = $carousel->Image()) {
-				$message = "Image file is stored in database, but doesn't exists in filesystem. Error!";
-				if (file_exists(Director::getAbsFile($i->Filename))) {
-					$message = "<img src='".$i->CarouselImageSize()->Filename."' />";
-				}
-				$fields->addFieldToTab("Root.Carousel", new LiteralField("CarouselImages","<div style='margin-bottom: 1em; border: 1px solid #ddd; text-align: center'><h2>".$carousel->Title."</h2><p><a href='/admin/pages/edit/EditForm/field/Documents/item/$carousel->ID/edit'>Change</a></p>$message<p></p></div>"));
-			}
-		}	
+	function updateSettingsFields(FieldList $fields) {
+		$fields->addFieldToTab("Root.MaxCarouselItems", new CheckboxField("notRecursiveCarousel",_t("MaxCarousel.notRecursiveCarousel","Do not grab items from parent page!")));
 	}
+	
+	public function MaxCarouselItems() {
+        return $this->owner->getManyManyComponents('MaxCarouselItems')->sort('SortOrder');
+    }
 	
 }
 
@@ -97,10 +99,10 @@ class MaxCarouselPage_ControllerExtension extends Extension {
 	 	if (!is_null(self::$cachedSlides)) return self::$cachedSlides;
 		
    		$page = $this->owner;
-   		$slides = $this->owner->Carousels();
+   		$slides = $this->owner->MaxCarouselItems();
    		while (!$slides->exists() && $page->ParentID != 0 && !$page->notRecursiveCarousel) {
    			$page = $page->Parent();
-   			$slides = $page->Carousels();
+   			$slides = $page->MaxCarouselItems();
    		} 
    		
    		if ($slides->exists()) {

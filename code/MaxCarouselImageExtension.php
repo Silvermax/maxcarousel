@@ -10,7 +10,6 @@ class MaxCarouselImageExtension extends DataExtension {
 	}
 	
 	function CarouselImageSize() {
-		if (!$this->owner->Width) return '<img src="http://dummyimage.com/'.self::$CarouselImageWidth.'x'.self::$CarouselImageHeight.'/aaa/fff.jpg" alt="" />';
 		return $this->owner->getFormattedImage('CarouselImageSize');
 	}	
 

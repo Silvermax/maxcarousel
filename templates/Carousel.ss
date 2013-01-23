@@ -1,14 +1,14 @@
 <div class="html_carousel">
 	<div id="Carousel">
 			<% control Carousels %>
-				<% if Image %>
+				<% if MaxCarouselImage %>
 					<div class="slide">
-						<% if LinkTo %>
-							<a href="$LinkTo.Link" title="$Title">
-								$Image.CarouselImageSize
+						<% if Link %>
+							<a href="$Link" title="$Title">
+								$MaxCarouselImage.CarouselImageSize
 							</a>
 						<% else %>
-								$Image.CarouselImageSize
+								$MaxCarouselImage.CarouselImageSize
 						<% end_if %>
 							<div>
 								<h4>$Title</h4>
@@ -17,9 +17,9 @@
 								<% else %>
 								<p>$Description</p>
 								<% end_if %>
-									<% if LinkTo %>
+									<% if Link %>
 									<p>
-										<a href="$LinkTo.Link" title="$Title" class="RMT">
+										<a href="$Link" title="$Title" class="RMT">
 											Viac info
 										</a>
 									</p>
@@ -29,5 +29,4 @@
 				<% end_if %>
 			<% end_control %>
 	</div>
-	<div id="Carousel_pager"></div>
 </div>

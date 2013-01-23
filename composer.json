@@ -1,5 +1,5 @@
 {
-	"name": "Silvermax/maxcarousel",
+	"name": "silvermax/maxcarousel",
 	"description": "MaxCarousel is SilverStripe module for slides management and presentation. Is tight to silverstripe DMS module.",
 	"type": "silverstripe-module",
 	"keywords": ["silverstripe", "maxcarousel", "carousel", "jquery"],

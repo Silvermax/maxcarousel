@@ -46,14 +46,21 @@ class MaxCarouselItem extends DataObject
 		
 		return $fields;
 	}
+	
+// Rename summaryfields
+   public static $field_labels = array(
+		'InternalLink.MenuTitle' => 'Internal LinkTo page',
+		'ExternalLink' => 'External Link',
+		'Thumbnail' => 'Image'
+   );
 
 // Tell the datagrid what fields to show in the table
    public static $summary_fields = array(
-		'Title' => 'Title',
-		'Description'=>'Description',
-		'InternalLink.MenuTitle' => 'Internal LinkTo page',
-		'ExternalLink' => 'ExternalLink',
-		'Thumbnail' => 'Image'
+		'Title',
+		'Description',
+		'InternalLink.MenuTitle',
+		'ExternalLink',
+		'Thumbnail'
    );
   
   // this function creates the thumnail for the summary fields to use

@@ -3,7 +3,7 @@
 * DataObject holding Slide data. If you fill in External link, InternalLink setup will be ignored.
 * You can setup per slide animation effect.
 * @package maxcarousel - silverstripe module for slides management and presentation
-* @link maxskitter https://github.com/Silvermax/maxskitter/
+* @link maxskitter https://github.com/Silvermax/maxcarousel/
 * @author Pali Ondras
 */
 

@@ -20,7 +20,7 @@ class MaxCarouselPageExtension extends DataExtension {
 	
 	function updateCMSFields(FieldList $fields) {	
 		
-		 $fields->addFieldToTab('Root.MaxCarouselItems', $grid=new GridField('MaxCarouselItems', 'Carousel items', $this->owner->MaxCarouselItems(), GridFieldConfig_RelationEditor::create(10)));
+		 $fields->addFieldToTab('Root.MaxCarouselItems', $grid=new GridField('MaxCarouselItems', 'Carousel items', $this->owner->sortedMaxCarouselItems(), GridFieldConfig_RelationEditor::create(10)));
 
         if (class_exists("GridFieldSortableRows")) {
         	$grid->getConfig()->addComponent(new GridFieldSortableRows('SortOrder'));
@@ -32,8 +32,12 @@ class MaxCarouselPageExtension extends DataExtension {
 		$fields->addFieldToTab("Root.MaxCarouselItems", new CheckboxField("notRecursiveCarousel",_t("MaxCarousel.notRecursiveCarousel","Do not grab items from parent page!")));
 	}
 	
-	public function MaxCarouselItems() {
+	public function sortedMaxCarouselItems() {
         return $this->owner->getManyManyComponents('MaxCarouselItems')->sort('SortOrder');
+    }
+	
+	public function MaxCarouselItems() {
+		return $this->owner->sortedMaxCarouselItems();	
     }
 	
 }

@@ -1,6 +1,6 @@
 <div class="html_carousel">
 	<div id="Carousel">
-			<% control Carousels %>
+			<% loop Carousels %>
 				<% if MaxCarouselImage %>
 					<div class="slide">
 						<% if Link %>
@@ -27,6 +27,6 @@
 							</div>
 					</div>
 				<% end_if %>
-			<% end_control %>
+			<% end_loop %>
 	</div>
 </div>

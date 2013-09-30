@@ -36,10 +36,6 @@ class MaxCarouselPageExtension extends DataExtension {
         return $this->owner->getManyManyComponents('MaxCarouselItems')->sort('SortOrder');
     }
 	
-	public function MaxCarouselItems() {
-		return $this->owner->sortedMaxCarouselItems();	
-    }
-	
 }
 
 /**
@@ -103,10 +99,10 @@ class MaxCarouselPage_ControllerExtension extends Extension {
 	 	if (!is_null(self::$cachedSlides)) return self::$cachedSlides;
 		
    		$page = $this->owner;
-   		$slides = $this->owner->MaxCarouselItems();
+   		$slides = $this->owner->sortedMaxCarouselItems();
    		while (!$slides->exists() && $page->ParentID != 0 && !$page->notRecursiveCarousel) {
    			$page = $page->Parent();
-   			$slides = $page->MaxCarouselItems();
+   			$slides = $page->sortedMaxCarouselItems();
    		} 
    		
    		if ($slides->exists()) {

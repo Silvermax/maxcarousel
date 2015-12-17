@@ -6,36 +6,37 @@
  * @author Pali Ondras
  */
 
-class MaxCarouselPageExtension extends DataExtension {
-	
-	static $db = array('notRecursiveCarousel' => 'Boolean');
-	
-	static $many_many = array('MaxCarouselItems'=>'MaxCarouselItem');
-	
-	public static $many_many_extraFields=array(
-    	'MaxCarouselItems'=>array(
-        	'SortOrder'=>'Int'
+class MaxCarouselPageExtension extends DataExtension
+{
+    
+    public static $db = array('notRecursiveCarousel' => 'Boolean');
+    
+    public static $many_many = array('MaxCarouselItems'=>'MaxCarouselItem');
+    
+    public static $many_many_extraFields=array(
+        'MaxCarouselItems'=>array(
+            'SortOrder'=>'Int'
         )
-	);
-	
-	function updateCMSFields(FieldList $fields) {	
-		
-		 $fields->addFieldToTab('Root.MaxCarouselItems', $grid=new GridField('MaxCarouselItems', 'Carousel items', $this->owner->sortedMaxCarouselItems(), GridFieldConfig_RelationEditor::create(10)));
+    );
+    
+    public function updateCMSFields(FieldList $fields)
+    {
+        $fields->addFieldToTab('Root.MaxCarouselItems', $grid=new GridField('MaxCarouselItems', 'Carousel items', $this->owner->sortedMaxCarouselItems(), GridFieldConfig_RelationEditor::create(10)));
 
         if (class_exists("GridFieldSortableRows")) {
-        	$grid->getConfig()->addComponent(new GridFieldSortableRows('SortOrder'));
-		} 
-	
-	}
-	
-	function updateSettingsFields(FieldList $fields) {
-		$fields->addFieldToTab("Root.MaxCarouselItems", new CheckboxField("notRecursiveCarousel",_t("MaxCarousel.notRecursiveCarousel","Do not grab items from parent page!")));
-	}
-	
-	public function sortedMaxCarouselItems() {
+            $grid->getConfig()->addComponent(new GridFieldSortableRows('SortOrder'));
+        }
+    }
+    
+    public function updateSettingsFields(FieldList $fields)
+    {
+        $fields->addFieldToTab("Root.MaxCarouselItems", new CheckboxField("notRecursiveCarousel", _t("MaxCarousel.notRecursiveCarousel", "Do not grab items from parent page!")));
+    }
+    
+    public function sortedMaxCarouselItems()
+    {
         return $this->owner->getManyManyComponents('MaxCarouselItems')->sort('SortOrder');
     }
-	
 }
 
 /**
@@ -48,19 +49,20 @@ class MaxCarouselPageExtension extends DataExtension {
  * @author Pali Ondras
  */
 
-class MaxCarouselPage_ControllerExtension extends Extension {
-	
-	private static $cachedSlides = null;
-	
-	static $carouselRequiredJSFiles =array(
-		"maxcarousel/javascript/carouFredSel-6.1.0/jquery-1.8.2.min.js",
-		"maxcarousel/javascript/carouFredSel-6.1.0/jquery.carouFredSel-6.1.0-packed.js",
-		"maxcarousel/javascript/carouFredSel-6.1.0/helper-plugins/jquery.mousewheel.min.js",
-		"maxcarousel/javascript/carouFredSel-6.1.0/helper-plugins/jquery.touchSwipe.min.js",
-		"maxcarousel/javascript/carouFredSel-6.1.0/helper-plugins/jquery.ba-throttle-debounce.min.js"
-	);
-	
-	static $carouselInitJS = 'jQuery(document).ready(function() {
+class MaxCarouselPage_ControllerExtension extends Extension
+{
+    
+    private static $cachedSlides = null;
+    
+    public static $carouselRequiredJSFiles =array(
+        "maxcarousel/javascript/carouFredSel-6.1.0/jquery-1.8.2.min.js",
+        "maxcarousel/javascript/carouFredSel-6.1.0/jquery.carouFredSel-6.1.0-packed.js",
+        "maxcarousel/javascript/carouFredSel-6.1.0/helper-plugins/jquery.mousewheel.min.js",
+        "maxcarousel/javascript/carouFredSel-6.1.0/helper-plugins/jquery.touchSwipe.min.js",
+        "maxcarousel/javascript/carouFredSel-6.1.0/helper-plugins/jquery.ba-throttle-debounce.min.js"
+    );
+    
+    public static $carouselInitJS = 'jQuery(document).ready(function() {
 		$("#Carousel").carouFredSel({
 			items 		: 1,
 			direction	: "up",
@@ -75,48 +77,52 @@ class MaxCarouselPage_ControllerExtension extends Extension {
 			function() { $(this).find("div").slideUp();	}
 		);
 	});';
-	
-	/*
-	 *  is slides available, init all JS/css dependencies
-	 */
-	public function onAfterInit() {
-		if ($this->owner->CarouselsRecursive()) {
-			Requirements::themedCSS("carousel.styles","maxcarousel");
-		   
-			$JS = self::$carouselRequiredJSFiles;
-	        
-	     	foreach ($JS as $js) { Requirements::javascript($js);}     
-	      	Requirements::combine_files("combined.carousel.js", $JS);
-		  
-		  	Requirements::customScript(self::$carouselInitJS);
-		   }
-	}
-	
-	/*
-	 * return Slides, if recursive enabled, try to get parent's slides if not available on current page
-	 * */
-	 public function CarouselsRecursive() {		
-	 	if (!is_null(self::$cachedSlides)) return self::$cachedSlides;
-		
-   		$page = $this->owner;
-   		$slides = $this->owner->sortedMaxCarouselItems();
-   		while (!$slides->exists() && $page->ParentID != 0 && !$page->notRecursiveCarousel) {
-   			$page = $page->Parent();
-   			$slides = $page->sortedMaxCarouselItems();
-   		} 
-   		
-   		if ($slides->exists()) {
-   			$data = new ArrayData(
-	   			array(
-		   			"Carousels" => $slides
-		   		)
-		   	);
-			self::$cachedSlides = $data->renderWith('Carousel');
-   		} else {
-   			self::$cachedSlides = false;
-   		}
-   		return self::$cachedSlides;
-   }
-		
+    
+    /*
+     *  is slides available, init all JS/css dependencies
+     */
+    public function onAfterInit()
+    {
+        if ($this->owner->CarouselsRecursive()) {
+            Requirements::themedCSS("carousel.styles", "maxcarousel");
+           
+            $JS = self::$carouselRequiredJSFiles;
+            
+            foreach ($JS as $js) {
+                Requirements::javascript($js);
+            }
+            Requirements::combine_files("combined.carousel.js", $JS);
+          
+            Requirements::customScript(self::$carouselInitJS);
+        }
+    }
+    
+    /*
+     * return Slides, if recursive enabled, try to get parent's slides if not available on current page
+     * */
+     public function CarouselsRecursive()
+     {
+         if (!is_null(self::$cachedSlides)) {
+             return self::$cachedSlides;
+         }
+        
+         $page = $this->owner;
+         $slides = $this->owner->sortedMaxCarouselItems();
+         while (!$slides->exists() && $page->ParentID != 0 && !$page->notRecursiveCarousel) {
+             $page = $page->Parent();
+             $slides = $page->sortedMaxCarouselItems();
+         }
+        
+         if ($slides->exists()) {
+             $data = new ArrayData(
+                array(
+                    "Carousels" => $slides
+                )
+            );
+             self::$cachedSlides = $data->renderWith('Carousel');
+         } else {
+             self::$cachedSlides = false;
+         }
+         return self::$cachedSlides;
+     }
 }
-
